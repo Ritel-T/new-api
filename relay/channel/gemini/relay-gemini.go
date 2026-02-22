@@ -799,6 +799,12 @@ func cleanFunctionParametersWithDepth(params interface{}, depth int) interface{}
 				cleanedNested[i] = cleanFunctionParametersWithDepth(item, depth+1)
 			}
 			cleanedMap["anyOf"] = cleanedNested
+			// 🔧 FIX: When anyOf is present, it must be the ONLY field (Gemini API requirement)
+			for key := range cleanedMap {
+				if key != "anyOf" {
+					delete(cleanedMap, key)
+				}
+			}
 		}
 
 		return cleanedMap
